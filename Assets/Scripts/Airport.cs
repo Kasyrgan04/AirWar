@@ -7,29 +7,52 @@ public class Airport : MonoBehaviour
     public string nombre;
     public int capacidadHangar = 5; // Capacidad de aviones que puede soportar
     public int combustibleDisponible = 1000; // Cantidad de combustible disponible
-    public List<Plane> aviones = new List<Plane>();
+    public List<Plane> aviones;
+    public GameObject prefabAvion;
+    public float intervaloCreacion = 10f;
 
-    // Crear un avión nuevo si hay espacio en el hangar
-    public void CrearAvion(Grafo grafo)
+    private void Start()
     {
-        if (aviones.Count < capacidadHangar)
+        aviones = new List<Plane>();
+        StartCoroutine(CrearAviones());
+
+    }
+
+    private IEnumerator CrearAviones()
+    {
+        while (true)
         {
-            Plane nuevoAvion = new Plane(System.Guid.NewGuid().ToString(), grafo, this);
-            aviones.Add(nuevoAvion);
-            Debug.Log("Avión creado con ID: " + nuevoAvion.ID);
-        }
-        else
-        {
-            Debug.LogWarning("Capacidad de hangar alcanzada. No se pueden crear más aviones.");
+            yield return new WaitForSeconds(intervaloCreacion);
+
+            if (aviones.Count < capacidadHangar) 
+            {
+                CrearAvion();
+            }
         }
     }
 
-    // Racionar combustible para un avión
-    public int ProveerCombustible(int cantidadSolicitada)
+    private void CrearAvion()
     {
-        int combustibleProporcionado = Mathf.Min(cantidadSolicitada, combustibleDisponible);
-        combustibleDisponible -= combustibleProporcionado;
-        Debug.Log(nombre + " ha proporcionado " + combustibleProporcionado + " unidades de combustible. Restante: " + combustibleDisponible);
-        return combustibleProporcionado;
+        GameObject nuevoAvion = Instantiate(prefabAvion,transform.position,Quaternion.identity);
+        Plane avionScript = nuevoAvion.GetComponent<Plane>();
+        if (avionScript != null) 
+        { 
+            avionScript.ID = System.Guid.NewGuid().ToString();
+            
+            aviones.Add(avionScript);
+            
+
+            Debug.Log($"Avión creado en {nombre}. ID: {avionScript.ID}");
+        }
     }
+
+    public void RemoverAvion(Plane avion)
+    {
+        if (aviones.Contains(avion)) 
+        {
+            aviones.Remove(avion);
+        }
+    }
+
+
 }

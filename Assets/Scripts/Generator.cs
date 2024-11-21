@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
@@ -9,9 +10,12 @@ public class Generator : MonoBehaviour
 {
     public GameObject aeropuertoPrefab;  // Prefab del aeropuerto
     public GameObject portaavionPrefab;  // Prefab del portaavión
+    public GameObject avionPrefab;
+
 
     private List<GameObject> aeropuertosGenerados = new List<GameObject>();
     private List<GameObject> portaavionesGenerados = new List<GameObject>();
+
 
     private Vector3[] posicionesAeropuertos = new Vector3[]
 {
@@ -47,6 +51,7 @@ public class Generator : MonoBehaviour
         ConectarAeropuertosYPortaaviones();
         grafo.ImprimirGrafo();
         DibujarConexiones();
+        MoverAvion(avionPrefab);
     }
 
     void GenerarAeropuertos()
@@ -71,9 +76,7 @@ public class Generator : MonoBehaviour
             }
         }
     }
-
-
-   void GenerarPortaaviones() 
+    void GenerarPortaaviones() 
     {
         for (int i = 0; i < posicionesPortaaviones.Length; i++)
         {
@@ -89,11 +92,6 @@ public class Generator : MonoBehaviour
             
         }
     }
-
-    
-
-
-
 
     // Método para conectar aeropuertos y portaaviones con rutas aleatorias
     void ConectarAeropuertosYPortaaviones()
@@ -211,6 +209,44 @@ public class Generator : MonoBehaviour
         lineRenderer.useWorldSpace = false; // Usar espacio local en lugar de espacio global
     }
 
+    public void MoverAvion(GameObject avion)
+    {
+        // Obtener un nodo de salida aleatorio (aeropuerto o portaavión)
+        int indiceSalida = UnityEngine.Random.Range(0, aeropuertosGenerados.Count + portaavionesGenerados.Count); // Aleatorio entre aeropuertos y portaaviones
+        string nodoSalida = indiceSalida < aeropuertosGenerados.Count ? "Aeropuerto_" + indiceSalida : "Portaavion_" + (indiceSalida - aeropuertosGenerados.Count);
+
+        // Obtener un nodo de llegada aleatorio
+        int indiceLlegada = UnityEngine.Random.Range(0, aeropuertosGenerados.Count + portaavionesGenerados.Count);
+        string nodoLlegada = indiceLlegada < aeropuertosGenerados.Count ? "Aeropuerto_" + indiceLlegada : "Portaavion_" + (indiceLlegada - aeropuertosGenerados.Count);
+
+        // Calcular la ruta óptima utilizando el grafo
+        List<string> ruta = grafo.CalcularRutaOptima(nodoSalida, nodoLlegada);
+
+        // Mover el avión a lo largo de la ruta
+        StartCoroutine(MoverAvionPorRuta(avion, ruta));
+    }
+
+    // Coroutine para mover el avión a lo largo de la ruta
+    private IEnumerator MoverAvionPorRuta(GameObject avion, List<string> ruta)
+    {
+        foreach (string nodo in ruta)
+        {
+            // Obtener el GameObject del nodo actual (aeropuerto o portaavión)
+            GameObject nodoActual = aeropuertosGenerados.Concat(portaavionesGenerados).FirstOrDefault(go => go.name == nodo);
+
+            if (nodoActual != null)
+            {
+                // Mover el avión hacia la posición del nodo
+                while (Vector3.Distance(avion.transform.position, nodoActual.transform.position) > 0.1f)
+                {
+                    avion.transform.position = Vector3.MoveTowards(avion.transform.position, nodoActual.transform.position, 5f * Time.deltaTime);
+                    yield return null;
+                }
+            }
+        }
+
+        Debug.Log("El avión ha llegado a su destino.");
+    }
 }
 
     

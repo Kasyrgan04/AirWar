@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 public class Ruta
@@ -61,6 +57,11 @@ public class Grafo
             return adjList[nodo];
         }
         return null;
+    }
+
+    public List<string> ObtenerNodos() 
+    {
+        return new List<string>(adjList.Keys);
     }
 
     // Método de Dijkstra para encontrar la ruta óptima

@@ -97,6 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d86ce39eb90c62a4b9d261c4d18b5378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 
-  capacidadAviones: 0
-  avionesGenerados: 0
+  nombre: 
+  capacidadHangar: 5
+  combustibleDisponible: 1000
+  aviones: []
+  prefabAvion: {fileID: 7219123929194920390, guid: 26064ce9c8df66446838f68c9fd12708, type: 3}
+  intervaloCreacion: 10
