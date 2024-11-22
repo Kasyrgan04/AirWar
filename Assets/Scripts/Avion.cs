@@ -6,6 +6,12 @@ public class Avion : MonoBehaviour
 {
     public Node posicionActual;
     public Graph grafo;
+    public float combustibleActual;
+    public float combustibleMax = 100f;
+    public float consumoPorDistancia = 0.1f;
+    public float consumoPorPeso = 0.05f;
+    public string ID;
+
 
     public void IniciarViaje()
     {
@@ -42,11 +48,36 @@ public class Avion : MonoBehaviour
         }
 
         posicionActual = nodo;
+        ReducirCombustible();
     }
 
     private void RecargarCombustible()
     {
-        // Lógica para recargar combustible.
+        combustibleActual = Mathf.Min(combustibleActual + Random.Range(10, 30), combustibleMax);
+    }
+
+    private void ReducirCombustible()
+    {
+        float distancia = Vector2.Distance(transform.position, posicionActual.Posicion);
+        float peroRuta = ObtenerPesoRuta(posicionActual);
+
+        float consumo = distancia * consumoPorDistancia + peroRuta * consumoPorPeso;
+        combustibleActual -= consumo;
+        Debug.Log($"Avión {ID} consumió {consumo} de combustible en la ruta {posicionActual.Nombre} -> {posicionActual.Nombre}. Combustible restante {combustibleActual}");
+    }
+
+    private float ObtenerPesoRuta(Node nodo)
+    {
+        
+        foreach (var arista in nodo.Adyacentes)
+        {
+            if (arista.Destino == posicionActual)
+            {
+                return arista.Peso;
+                
+            }
+        }
+        return 0f;
     }
 
     private List<Node> CalcularRutaMasCorta(Graph grafo, Node inicio, Node destino)
@@ -100,4 +131,19 @@ public class Avion : MonoBehaviour
 
         return ruta;
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bullet"))
+        {
+            Destruir();
+        }
+    } 
+    
+    private void Destruir()
+    {
+        Destroy(gameObject);
+    }
 }
+
+

@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3525849124045814310}
   - component: {fileID: 7329713227576634208}
-  - component: {fileID: -7994207377865481291}
   - component: {fileID: -1549315711368943670}
+  - component: {fileID: 1514984936037328182}
   m_Layer: 0
   m_Name: rb_65735
-  m_TagString: Untagged
+  m_TagString: Plane
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,22 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-7994207377865481291
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7219123929194920390}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd937c69bf4828d43a142fca1b4c7145, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ID: 
-  velocidad: 5
-  combustibleActual: 0
-  combustibleMax: 100
 --- !u!114 &-1549315711368943670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,3 +98,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db8811b61e2b4e046b1b1873a8d5e0c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  combustibleActual: 0
+  combustibleMax: 100
+  consumoPorDistancia: 0.1
+  consumoPorPeso: 0.05
+  ID: 
+--- !u!70 &1514984936037328182
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7219123929194920390}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.4, y: 0.3}
+  m_Size: {x: 21, y: 9.3}
+  m_Direction: 1

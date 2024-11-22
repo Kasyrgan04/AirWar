@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Node
@@ -52,12 +50,29 @@ public class Graph
     {
         if (!Nodos.Contains(origen) || !Nodos.Contains(destino))
         {
-            UnityEngine.Debug.LogError("Ambos nodos deben existir en el grafo antes de agregar una arista.");
+            Debug.LogError("Ambos nodos deben existir en el grafo antes de agregar una arista.");
             return;
         }
 
         Edge arista = new Edge(destino, peso);
         origen.Adyacentes.Add(arista);
     }
+
+    public void ImprimirGrafo()
+    {
+        foreach (var nodo in Nodos)
+        {
+            // Imprimir el nodo actual
+            Debug.Log($"Nodo: {nodo.Nombre} en {nodo.Posicion}");
+
+            // Imprimir sus aristas (adyacentes)
+            foreach (var arista in nodo.Adyacentes)
+            {
+                Debug.Log($"  -> {arista.Destino.Nombre} (Peso: {arista.Peso})");
+            }
+        }
+    }
+
+
 
 }

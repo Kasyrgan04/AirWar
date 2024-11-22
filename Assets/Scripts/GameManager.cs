@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Instanciando aviones...");
         InstanciarAviones(5);
+        grafo.ImprimirGrafo();
     }
 
 
@@ -114,6 +115,8 @@ public class GameManager : MonoBehaviour
             Avion avion = avionObj.GetComponent<Avion>();
             avion.posicionActual = nodoInicial;
             avion.grafo = grafo;
+            avion.ID = System.Guid.NewGuid().ToString();
+            avion.combustibleActual = UnityEngine.Random.Range(0, avion.combustibleMax);
 
             avion.IniciarViaje();
         }
