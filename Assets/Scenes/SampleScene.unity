@@ -226,6 +226,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1400021173}
   - component: {fileID: 1400021172}
+  - component: {fileID: 1400021174}
   m_Layer: 0
   m_Name: Generator
   m_TagString: Untagged
@@ -240,7 +241,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1400021171}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6830a7a637dc6642b0b4f2a7818296b, type: 3}
   m_Name: 
@@ -263,6 +264,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1400021174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400021171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac99c6b6c4fa0444da2511b779546ecb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  aeropuertoPrefab: {fileID: 696398917005898713, guid: 5c8cbffeda6a1f24f867d816e19329e7, type: 3}
+  portaavionPrefab: {fileID: 6616619420479967701, guid: 9142f319d02510d4bb4ca4641f91d703, type: 3}
+  avionPrefab: {fileID: 7219123929194920390, guid: 26064ce9c8df66446838f68c9fd12708, type: 3}
+  posicionesAeropuertos:
+  - {x: -5.65, y: 1.48}
+  - {x: -3.68, y: -0.83}
+  - {x: 0.64, y: -1.76}
+  - {x: -0.69, y: 0.42}
+  - {x: 6.12, y: -1.82}
+  - {x: 0.45, y: 2.05}
+  - {x: 4.7, y: 1.12}
+  - {x: 4.28, y: 3.28}
+  - {x: -2.59, y: 3.89}
+  posicionesPortaaviones:
+  - {x: -2.23, y: 0.41}
+  - {x: -6.66, y: -0.11}
+  - {x: 3.27, y: -1.27}
+  - {x: 7.15, y: 0.82}
+  - {x: -2.03, y: 2.36}
 --- !u!4 &1822660839 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8400347903130834815, guid: 8e046be2ae239574e8e91f6e85763458, type: 3}
@@ -280,7 +312,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1838186037}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61dd1dccfb645c640bdacb5b86a05e24, type: 3}
   m_Name: 
@@ -294,6 +326,21 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7942397549260547040, guid: ca05f9b85890a18488bd04737a0e83f1, type: 3}
   m_PrefabInstance: {fileID: 3907534425573783647}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1838186043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838186037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ebf2aa57f7c780146a3151665e08de02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  velocidad: 5
+  limiteIzquierdo: -10
+  limiteDerecho: 10
 --- !u!1001 &3907534425573783647
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -361,6 +408,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 546780090363142230, guid: ca05f9b85890a18488bd04737a0e83f1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1838186040}
+    - targetCorrespondingSourceObject: {fileID: 546780090363142230, guid: ca05f9b85890a18488bd04737a0e83f1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1838186043}
   m_SourcePrefab: {fileID: 100100000, guid: ca05f9b85890a18488bd04737a0e83f1, type: 3}
 --- !u!1001 &5624972684359934486
 PrefabInstance:

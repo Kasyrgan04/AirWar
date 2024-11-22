@@ -9,6 +9,7 @@ public class Airport : MonoBehaviour
     public int combustibleDisponible = 1000; // Cantidad de combustible disponible
     public List<Plane> aviones;
     public GameObject prefabAvion;
+    
     public float intervaloCreacion = 10f;
 
     private void Start()

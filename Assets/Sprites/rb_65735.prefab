@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3525849124045814310}
   - component: {fileID: 7329713227576634208}
   - component: {fileID: -7994207377865481291}
+  - component: {fileID: -1549315711368943670}
   m_Layer: 0
   m_Name: rb_65735
   m_TagString: Untagged
@@ -92,12 +93,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7219123929194920390}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fd937c69bf4828d43a142fca1b4c7145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   velocidad: 5
   combustibleActual: 0
   combustibleMax: 100
-  gestor: {fileID: 0}
+--- !u!114 &-1549315711368943670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7219123929194920390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db8811b61e2b4e046b1b1873a8d5e0c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
