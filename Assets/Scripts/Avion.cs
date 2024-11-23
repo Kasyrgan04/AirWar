@@ -11,10 +11,13 @@ public class Avion : MonoBehaviour
     public float consumoPorDistancia = 0.1f;
     public float consumoPorPeso = 0.05f;
     public string ID;
+    private bool enViaje = false;
+    
 
 
     public void IniciarViaje()
     {
+
         Node destino = SeleccionarDestinoAleatorio(grafo);
         StartCoroutine(GestionarViaje(destino));
     }
@@ -63,7 +66,7 @@ public class Avion : MonoBehaviour
 
         float consumo = distancia * consumoPorDistancia + peroRuta * consumoPorPeso;
         combustibleActual -= consumo;
-        Debug.Log($"Avión {ID} consumió {consumo} de combustible en la ruta {posicionActual.Nombre} -> {posicionActual.Nombre}. Combustible restante {combustibleActual}");
+        //Debug.Log($"Avión {ID} consumió {consumo} de combustible en la ruta {posicionActual.Nombre} -> {posicionActual.Nombre}. Combustible restante {combustibleActual}");
     }
 
     private float ObtenerPesoRuta(Node nodo)
@@ -134,16 +137,33 @@ public class Avion : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.CompareTag("Airport") || collision.CompareTag("Carrier"))
+        {
+            enViaje = true;
+            //Debug.Log($"Avión {ID} está en zona segura.");
+        }
+
         if (collision.CompareTag("Bullet"))
         {
-            Destruir();
+            if(enViaje)
+            {
+                //Debug.Log($"Avión {ID} fue alcanzado por una bala en pleno vuelo.");
+                return;
+            }
+            Debug.Log($"Avión {ID} fue alcanzado por una bala.");
+            Destroy(gameObject);
         }
-    } 
-    
-    private void Destruir()
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        Destroy(gameObject);
+        if (collision.CompareTag("Airport") || collision.CompareTag("Carrier"))
+        {
+            enViaje = false;
+            //Debug.Log($"Avión {ID} abandonó la zona segura.");
+        }
     }
 }
+
 
 

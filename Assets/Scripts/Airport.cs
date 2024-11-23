@@ -4,56 +4,30 @@ using UnityEngine;
 
 public class Airport : MonoBehaviour
 {
-    public string nombre;
-    public int capacidadHangar = 5; // Capacidad de aviones que puede soportar
-    public int combustibleDisponible = 1000; // Cantidad de combustible disponible
-    public List<Plane> aviones;
-    public GameObject prefabAvion;
-    
-    public float intervaloCreacion = 10f;
+    public int capacidadMaxima = 10; // Capacidad máxima del hangar
+    private int avionesActuales = 0;
 
-    private void Start()
+    public bool PuedeGenerarAvion()
     {
-        aviones = new List<Plane>();
-        StartCoroutine(CrearAviones());
-
+        return avionesActuales < capacidadMaxima;
     }
 
-    private IEnumerator CrearAviones()
+    public void RegistrarAvion()
     {
-        while (true)
+        if (avionesActuales < capacidadMaxima)
         {
-            yield return new WaitForSeconds(intervaloCreacion);
-
-            if (aviones.Count < capacidadHangar) 
-            {
-                CrearAvion();
-            }
+            avionesActuales++;
         }
     }
 
-    private void CrearAvion()
+    public void SalirAvion()
     {
-        GameObject nuevoAvion = Instantiate(prefabAvion,transform.position,Quaternion.identity);
-        Plane avionScript = nuevoAvion.GetComponent<Plane>();
-        if (avionScript != null) 
-        { 
-            avionScript.ID = System.Guid.NewGuid().ToString();
-            
-            aviones.Add(avionScript);
-            
+        Debug.Log("Aviones anteriores: " + avionesActuales);
 
-            Debug.Log($"Avión creado en {nombre}. ID: {avionScript.ID}");
-        }
-    }
-
-    public void RemoverAvion(Plane avion)
-    {
-        if (aviones.Contains(avion)) 
+        if (avionesActuales > 0)
         {
-            aviones.Remove(avion);
+            avionesActuales--;
+            Debug.Log("Aviones actuales: " + avionesActuales);
         }
     }
-
-
 }

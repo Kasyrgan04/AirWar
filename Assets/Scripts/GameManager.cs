@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Instanciando aviones...");
         InstanciarAviones(5);
-        grafo.ImprimirGrafo();
+        //grafo.ImprimirGrafo();
     }
 
 
@@ -56,7 +56,10 @@ public class GameManager : MonoBehaviour
         {
             Node aeropuerto = new Node($"Aeropuerto_{i + 1}", posicionesAeropuertos[i]);
             grafo.AgregarNodo(aeropuerto);
-            Instantiate(aeropuertoPrefab, aeropuerto.Posicion, Quaternion.identity);
+            GameObject aeropuertoObj = Instantiate(aeropuertoPrefab, aeropuerto.Posicion, Quaternion.identity);
+            Airport airportScript = aeropuertoObj.GetComponent<Airport>();
+            airportScript.capacidadMaxima = Random.Range(5, 15);
+            Debug.Log($"Aeropuerto {aeropuerto.Nombre} con capacidad de {airportScript.capacidadMaxima} aviones.");
         }
 
         // Portaaviones
