@@ -80,6 +80,7 @@ public class GameManager : MonoBehaviour
         {
             tiempoJuego = 0;
             TerminarJuego();
+            DestruirTodo<Avion>();
         }
 
         ActualizarTimer();
@@ -274,6 +275,15 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Avión {avion.ID} destruido. Total de aviones destruidos: {avionesDestruidos.Count}");
     }
 
+    private void DestruirTodo<T>() where T : MonoBehaviour
+    {
+        T[] objetos = FindObjectsOfType<T>();
+
+        foreach (var objeto in objetos)
+        {
+            Destroy(objeto.gameObject);
+        }
+    }
 
     private List<Avion> MergeSort(List<Avion> lista)
     {

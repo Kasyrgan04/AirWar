@@ -62,7 +62,6 @@ public class Avion : MonoBehaviour
 
     public void IniciarViaje()
     {
-
         Node destino = SeleccionarDestinoAleatorio(grafo);
         StartCoroutine(GestionarViaje(destino));
     }
