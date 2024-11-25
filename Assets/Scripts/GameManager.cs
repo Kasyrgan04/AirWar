@@ -1,13 +1,14 @@
-using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using TMPro;
 using Unity.VisualScripting;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject aeropuertoPrefab;
     public GameObject portaavionPrefab;
     public GameObject avionPrefab;
+    public GameObject pantallaFinal;
 
     public List<Vector2> posicionesAeropuertos = new List<Vector2>
 {
@@ -29,6 +30,17 @@ public class GameManager : MonoBehaviour
         new Vector2(7.15f, 0.82f),  // Portaavión 4
         new Vector2(-2.03f,2.36f),// Portaavión 5
     };
+    public List<Avion> avionesDestruidos = new List<Avion>();
+
+    public float tiempoJuego = 90f;
+    public float tiempoEntreAviones = 10f;
+    private bool juegoTerminado = false;
+
+    public TMPro.TextMeshProUGUI tiempoText;
+    public TMPro.TextMeshProUGUI avionesDestruidosText;
+    public TMPro.TextMeshProUGUI resultadosText;
+    public TMP_Dropdown Criterio;
+    private string criterioSeleccionado = "id";
 
     private Graph grafo;
 
@@ -48,6 +60,133 @@ public class GameManager : MonoBehaviour
         //grafo.ImprimirGrafo();
     }
 
+    private void Update()
+    {
+        if (juegoTerminado)
+        {
+            return;
+        }
+
+        tiempoJuego -= Time.deltaTime;
+        tiempoEntreAviones -= Time.deltaTime;
+
+        if (tiempoEntreAviones <= 0)
+        {
+            InstanciarAviones(5);
+            tiempoEntreAviones = 10f;
+        }
+
+        if (tiempoJuego <= 0) 
+        {
+            tiempoJuego = 0;
+            TerminarJuego();
+        }
+
+        ActualizarTimer();
+    }
+
+    private void ActualizarTimer()
+    {
+        int minutos = Mathf.FloorToInt(tiempoJuego / 60);
+        int segundos = Mathf.FloorToInt(tiempoJuego % 60);
+
+        tiempoText.text = $"{minutos:D2}:{segundos:D2}";
+    }
+
+    private void TerminarJuego()
+    {
+        pantallaFinal.SetActive(true);
+
+        avionesDestruidos = MergeSort(avionesDestruidos);
+
+       
+    }
+
+    public void CambiarCriterio(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                criterioSeleccionado = "id";
+                break;
+            case 1:
+                criterioSeleccionado = "rol";
+                break;
+            case 2:
+                criterioSeleccionado = "horas";
+                break;
+        }
+
+        MostrarResultado();
+    }
+
+    public void MostrarResultado()
+    {
+        string resultados = $"Aviones destruidos: {avionesDestruidos.Count}\n ";
+
+        resultados += "ID Avión\tPilot\tCopilot\tMaintenance\tSpace Awarness\n";
+        resultados += "------------------------------------------------------------\n";
+
+        foreach (var avion in avionesDestruidos)
+        {
+            resultados += $"{avion.ID}\t";
+
+            var modulosOrdenados = OrdenarModulosPorCriterio(avion.modulos, criterioSeleccionado);
+            foreach(var modulo in modulosOrdenados)
+            {
+                resultados += $"{modulo.ID}\n Horas de vuelo: {modulo.HorasDeVuelo}\t";
+                
+            }
+            resultados += "\n";
+            resultados += "------------------------------------------------------------\n";
+        }
+
+        resultadosText.text = resultados;
+    }
+
+    // Ordenar los módulos de IA por el criterio seleccionado
+    private List<AIModule> OrdenarModulosPorCriterio(List<AIModule> modulos, string criterio)
+    {
+        List<AIModule> modulosOrdenados = new List<AIModule>(modulos);
+        int n = modulosOrdenados.Count;
+
+        for (int i = 0; i < n - 1; i++)
+        {
+            int minIndex = i;
+            for (int j = i + 1; j < n; j++)
+            {
+                bool debeIntercambiar = false;
+
+                switch (criterio.ToLower())
+                {
+                    case "id":
+                        debeIntercambiar = string.Compare(modulosOrdenados[j].ID, modulosOrdenados[minIndex].ID) < 0;
+                        break;
+                    case "rol":
+                        debeIntercambiar = string.Compare(modulosOrdenados[j].Rol, modulosOrdenados[minIndex].Rol) < 0;
+                        break;
+                    case "horas":
+                        debeIntercambiar = modulosOrdenados[j].HorasDeVuelo < modulosOrdenados[minIndex].HorasDeVuelo;
+                        break;
+                }
+
+                if (debeIntercambiar)
+                {
+                    minIndex = j;
+                }
+            }
+
+            // Intercambiar elementos
+            if (minIndex != i)
+            {
+                var temp = modulosOrdenados[i];
+                modulosOrdenados[i] = modulosOrdenados[minIndex];
+                modulosOrdenados[minIndex] = temp;
+            }
+        }
+
+        return modulosOrdenados;
+    }
 
     void InstanciarNodos()
     {
@@ -67,7 +206,11 @@ public class GameManager : MonoBehaviour
         {
             Node portaavion = new Node($"Portaavion_{i + 1}", posicionesPortaaviones[i]);
             grafo.AgregarNodo(portaavion);
-            Instantiate(portaavionPrefab, portaavion.Posicion, Quaternion.identity);
+            GameObject portaavionObj = Instantiate(portaavionPrefab, portaavion.Posicion, Quaternion.identity);
+            Carrier carrierScript = portaavionObj.GetComponent<Carrier>();
+            carrierScript.CombustibleTotal = 100000f;
+            carrierScript.ID = portaavion.Nombre;
+
         }
 
         if (grafo.Nodos.Count == 0)
@@ -75,7 +218,6 @@ public class GameManager : MonoBehaviour
             Debug.LogError("No se agregaron nodos al grafo.");
         }
     }
-
 
     void CrearRutas()
     {
@@ -123,6 +265,63 @@ public class GameManager : MonoBehaviour
 
             avion.IniciarViaje();
         }
+    }
+
+    public void AvionDestruido(Avion avion)
+    {
+        avionesDestruidos.Add(avion);
+        avionesDestruidosText.text = $"Aviones destruidos: {avionesDestruidos.Count}";
+        Debug.Log($"Avión {avion.ID} destruido. Total de aviones destruidos: {avionesDestruidos.Count}");
+    }
+
+
+    private List<Avion> MergeSort(List<Avion> lista)
+    {
+        if (lista.Count <= 1)
+        {
+            return lista;
+        }
+
+        int mitad = lista.Count / 2;
+        List<Avion> izquierda = MergeSort(lista.GetRange(0, mitad));
+        List<Avion> derecha = MergeSort(lista.GetRange(mitad, lista.Count - mitad));
+
+        return Merge(izquierda, derecha);
+    }
+
+    private List<Avion> Merge(List<Avion> izquierda, List<Avion> derecha)
+    {
+        List<Avion> resultado = new List<Avion>();
+        int indiceIzquierda = 0;
+        int indiceDerecha = 0;
+
+        while (indiceIzquierda < izquierda.Count && indiceDerecha < derecha.Count)
+        {
+            if (string.Compare(izquierda[indiceIzquierda].ID, derecha[indiceDerecha].ID) <= 0)
+            {
+                resultado.Add(izquierda[indiceIzquierda]);
+                indiceIzquierda++;
+            }
+            else
+            {
+                resultado.Add(derecha[indiceDerecha]);
+                indiceDerecha++;
+            }
+        }
+
+        while (indiceIzquierda < izquierda.Count)
+        {
+            resultado.Add(izquierda[indiceIzquierda]);
+            indiceIzquierda++;
+        }
+
+        while (indiceDerecha < derecha.Count)
+        {
+            resultado.Add(derecha[indiceDerecha]);
+            indiceDerecha++;
+        }
+
+        return resultado;
     }
 
 }

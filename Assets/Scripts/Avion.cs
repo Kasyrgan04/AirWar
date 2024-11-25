@@ -12,8 +12,53 @@ public class Avion : MonoBehaviour
     public float consumoPorPeso = 0.05f;
     public string ID;
     private bool enViaje = false;
-    
+    public float tiempoVuelo;
+    public List<AIModule> modulos = new List<AIModule>();
 
+
+    public void Awake()
+    {
+        InicializarModulos();
+    }
+
+    private void Update()
+    {
+        if (combustibleActual <= 0)
+        {
+            Debug.Log($"Avión {ID} se quedó sin combustible.");
+            Destroy(this);
+        }
+
+        tiempoVuelo += Time.deltaTime;
+
+        if (tiempoVuelo >= 10)
+        {
+            foreach (var modulo in modulos)
+            {
+                modulo.HorasDeVuelo++;
+            }
+            tiempoVuelo = 0;
+        }
+    }
+
+
+    private void InicializarModulos()
+    {
+        modulos.Add(new AIModule("Pilot"));
+        modulos.Add(new AIModule("Copilot"));
+        modulos.Add(new AIModule("Maintenance"));
+        modulos.Add(new AIModule("Space Awarness"));
+    }
+
+    public void MostrarModulos()
+    {
+        Debug.Log($"Avión ID: {ID}");
+        foreach (var modulo in modulos)
+        {
+            Debug.Log(modulo.ToString());
+        }
+
+    }
 
     public void IniciarViaje()
     {
@@ -56,7 +101,7 @@ public class Avion : MonoBehaviour
 
     private void RecargarCombustible()
     {
-        combustibleActual = Mathf.Min(combustibleActual + Random.Range(10, 30), combustibleMax);
+        combustibleActual = Mathf.Min(combustibleActual + Random.Range(10, 30), 80);
     }
 
     private void ReducirCombustible()
@@ -66,7 +111,7 @@ public class Avion : MonoBehaviour
 
         float consumo = distancia * consumoPorDistancia + peroRuta * consumoPorPeso;
         combustibleActual -= consumo;
-        //Debug.Log($"Avión {ID} consumió {consumo} de combustible en la ruta {posicionActual.Nombre} -> {posicionActual.Nombre}. Combustible restante {combustibleActual}");
+        Debug.Log($"Avión {ID} consumió {consumo} de combustible en la ruta {posicionActual.Nombre} -> {posicionActual.Nombre}. Combustible restante {combustibleActual}");
     }
 
     private float ObtenerPesoRuta(Node nodo)
@@ -151,7 +196,7 @@ public class Avion : MonoBehaviour
                 return;
             }
             Debug.Log($"Avión {ID} fue alcanzado por una bala.");
-            Destroy(gameObject);
+            DestruirAvion();
         }
     }
 
@@ -162,6 +207,18 @@ public class Avion : MonoBehaviour
             enViaje = false;
             //Debug.Log($"Avión {ID} abandonó la zona segura.");
         }
+    }
+
+    public void DestruirAvion()
+    {
+        GameManager gameManager = FindObjectOfType<GameManager>();
+
+        if (gameManager != null)
+        {
+            gameManager.AvionDestruido(this);
+        }
+
+        Destroy(gameObject);
     }
 }
 
